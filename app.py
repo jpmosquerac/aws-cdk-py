@@ -36,9 +36,10 @@ for tag_name, tag_value in tags.items():
     )
 
 # Base stack
-AwsCdkPyStack(app, f"{props['namespace']}", props, env=env_)
+aws_cdk_py_stack = AwsCdkPyStack(app, f"{props['namespace']}", props, env=env_)
 
 # Pipeline stack
-Pipeline(app, f"{props['namespace']}-PipelineStack", AwsCdkPyStack.outputs, env=env_)
+pipeline = Pipeline(app, f"{props['namespace']}-PipelineStack", aws_cdk_py_stack.outputs, env=env_)
+pipeline.add_dependency(aws_cdk_py_stack)
 
 app.synth()

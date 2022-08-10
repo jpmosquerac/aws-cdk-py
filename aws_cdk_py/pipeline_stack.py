@@ -16,11 +16,11 @@ class Pipeline(Stack):
         source   = CodePipelineSource.git_hub("OWNER/REPO", "main")
 
         synth_step = ShellStep("Synth", 
-                        input=source,
-                        commands=["npm install -g aws-cdk",
+                        input = source,
+                        commands = ["npm install -g aws-cdk",
                         "python -m pip install -r requirements.txt",
                         "cdk synth"])
 
         pipeline   = CodePipeline(self, f"{props['namespace']}-Pipeline", 
-                        pipeline_name=f"{props['namespace']}-Pipeline",
-                        synth=synth_step)
+                        pipeline_name = f"{props['namespace']}-Pipeline",
+                        synth = synth_step)
