@@ -5,7 +5,6 @@ from aws_cdk import (
     Stack, 
     aws_s3,
     aws_lambda,
-    aws_cognito,
     aws_dynamodb,
     RemovalPolicy,
     aws_apigateway,
@@ -23,20 +22,6 @@ class ServerlessBackendStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True
         )
-
-        user_pool = aws_cognito.UserPool(self, "UserPool")
-
-        user_pool.add_client("app-client", auth_flows=aws_cognito.AuthFlow(
-            user_password=True
-        ),
-            supported_identity_providers=[
-                aws_cognito.UserPoolClientIdentityProvider.COGNITO]
-        )
-
-        auth = aws_apigateway.CognitoUserPoolsAuthorizer(self, "imagesAuthorizer",
-                                                      cognito_user_pools=[
-                                                          user_pool]
-                                                      )
 
         table = aws_dynamodb.Table(self, id='dynamoTable', table_name='formmetadata', partition_key=aws_dynamodb.Attribute(
             name='userid', type=aws_dynamodb.AttributeType.STRING)) #change primary key here
@@ -60,8 +45,7 @@ class ServerlessBackendStack(Stack):
 
         postData = api.root.add_resource("form")
         
-        postData.add_method("POST", authorizer=auth,
-                          authorization_type=aws_apigateway.AuthorizationType.COGNITO)  # POST images/files & metadata
+        postData.add_method("POST")
 
         self.output_props = props.copy()
         self.output_props['bucket'] = bucket
