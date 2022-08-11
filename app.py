@@ -8,9 +8,7 @@ from aws_cdk import (
     Environment
 )
 
-from aws_cdk_py.aws_cdk_py_stack import AwsCdkPyStack
 from aws_cdk_py.pipeline_stack import Pipeline
-
 
 with open('./parameters.yml') as file:
     parameters = yaml.load(file, Loader=yaml.FullLoader)
@@ -35,11 +33,7 @@ for tag_name, tag_value in tags.items():
         tag_value
     )
 
-# Base stack
-aws_cdk_py_stack = AwsCdkPyStack(app, f"{props['namespace']}", props, env=env_)
-
 # Pipeline stack
-pipeline = Pipeline(app, f"{props['namespace']}-PipelineStack", aws_cdk_py_stack.outputs, env=env_)
-pipeline.add_dependency(aws_cdk_py_stack)
+pipeline = Pipeline(app, f"{props['namespace']}-PipelineStack", props, env=env_)
 
 app.synth()
