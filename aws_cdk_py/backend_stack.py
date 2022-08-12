@@ -14,10 +14,7 @@ class BackendStack(Stack):
 
     def __init__(self, app: App, id: str, props, **kwargs) -> None:
         super().__init__(app, id, **kwargs)
-
-        bucket =  aws_s3.Bucket(self, id='s3bucket',
-                               bucket_name='testbucketJP1234', removal_policy=RemovalPolicy.DESTROY)
-
+        
         table = aws_dynamodb.Table(self, id='dynamoTable', table_name='backendtable', 
                                 removal_policy=RemovalPolicy.DESTROY,
                                 partition_key=aws_dynamodb.Attribute(name='id', type=aws_dynamodb.AttributeType.STRING)) #change primary key here
