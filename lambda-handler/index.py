@@ -14,12 +14,16 @@ def handler(event, context):
     '''
     print("Received event: " + json.dumps(event, indent=2))
 
-    data = event['body']
-    print("Recived body:" + data)
+    #
+    body = json.loads(event['body'])
+    print("Recived body: %s \nType: %s"%(body, type(body)))
 
-    print("Recived operation:" + data['operation'])
+    payload = event.get('payload')
+    print("Recived payload: %s \nType: %s"%(payload, type(payload)))
 
+    #
     operation = event['operation']
+
 
     if 'tableName' in event:
         dynamo = boto3.resource('dynamodb').Table(event['tableName'])
