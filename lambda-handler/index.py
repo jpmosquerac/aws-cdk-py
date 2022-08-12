@@ -18,15 +18,15 @@ def handler(event, context):
     body = json.loads(event['body'])
     print("Recived body: %s \nType: %s"%(body, type(body)))
 
-    payload = event.get('payload')
+    payload = event.get('body')
     print("Recived payload: %s \nType: %s"%(payload, type(payload)))
 
     #
-    operation = event['operation']
+    operation = body['operation']
 
 
-    if 'tableName' in event:
-        dynamo = boto3.resource('dynamodb').Table(event['tableName'])
+    if 'tableName' in body:
+        dynamo = boto3.resource('dynamodb').Table(body['tableName'])
 
     operations = {
         'create': lambda x: dynamo.put_item(**x),
@@ -39,6 +39,6 @@ def handler(event, context):
     }
 
     if operation in operations:
-        return operations[operation](event.get('payload'))
+        return operations[operation](json.loads(body['payload']))
     else:
         raise ValueError('Unrecognized operation "{}"'.format(operation))
