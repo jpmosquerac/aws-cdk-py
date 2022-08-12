@@ -30,7 +30,7 @@ class BackendStack(Stack):
         table.grant_read_write_data(lambda_)
 
         api = aws_apigateway.LambdaRestApi(
-            self, id='lambdaapi', rest_api_name='lambdaapi', handler=lambda_, proxy=False)
+            self, id='lambdaapi', rest_api_name='lambdaapi', handler=lambda_, proxy=True)
 
         postData = api.root.add_resource("api")
         

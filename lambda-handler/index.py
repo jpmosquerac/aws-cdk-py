@@ -1,5 +1,4 @@
 from __future__ import print_function
-import http
 
 import boto3
 import json
