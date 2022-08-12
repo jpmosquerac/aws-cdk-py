@@ -34,8 +34,8 @@ def handler(event, context):
 
     if operation in operations:
         try:
-            return operations[operation](json.loads(body['payload']))
+            return operations[operation](body.get('payload'))
         except Exception:
-            return Exception
+            return Exception.__str__
     else:
         raise ValueError('Unrecognized operation "{}"'.format(operation))
