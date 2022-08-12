@@ -1,7 +1,7 @@
 
-# Welcome to your CDK Python project!
+# AWS-CDK-PY!
 
-This is a blank project for CDK development with Python.
+TODO.
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
