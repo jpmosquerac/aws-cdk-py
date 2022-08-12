@@ -7,12 +7,16 @@ from aws_cdk import (
     aws_lambda,
     aws_dynamodb,
     aws_apigateway,
+    aws_s3
 )
 
 class BackendStack(Stack):
 
     def __init__(self, app: App, id: str, props, **kwargs) -> None:
         super().__init__(app, id, **kwargs)
+
+        bucket =  aws_s3.Bucket(self, id='s3bucket',
+                               bucket_name='ExambpleBucket', removal_policy=RemovalPolicy.DESTROY)
 
         table = aws_dynamodb.Table(self, id='dynamoTable', table_name='backendtable', 
                                 removal_policy=RemovalPolicy.DESTROY,
@@ -30,7 +34,7 @@ class BackendStack(Stack):
         table.grant_read_write_data(lambda_)
 
         api = aws_apigateway.LambdaRestApi(
-            self, id='lambdaapi', rest_api_name='lambdaapi', handler=lambda_, proxy=True)
+            self, id='lambdaapi', rest_api_name='lambdaapi', handler=lambda_, proxy=False)
 
         postData = api.root.add_resource("api")
         
