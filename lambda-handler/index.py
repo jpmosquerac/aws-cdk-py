@@ -15,7 +15,7 @@ def handler(event, context):
     '''
     #print("Received event: " + json.dumps(event, indent=2))
 
-    body = json.loads(event['body'])
+    body = event['body']
 
     operation = body['operation']
 
