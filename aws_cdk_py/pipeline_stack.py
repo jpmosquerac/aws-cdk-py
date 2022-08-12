@@ -35,10 +35,6 @@ class Pipeline(Stack):
 
         backendStage = pipeline.add_stage(BackendStage(self, f"{props['namespace']}-BackendStage", props))
 
-        backendStage.add_post(ShellStep(
-            commands=["echo HELLO"]
-        ))
-
         self.output_props = props.copy()
         self.output_props['pipeline'] = pipeline
 
