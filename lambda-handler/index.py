@@ -12,13 +12,17 @@ def handler(event, context):
       - tableName: required for operations that interact with DynamoDB
       - payload: a parameter to pass to the operation being performed
     '''
-    #print("Received event: " + json.dumps(event, indent=2))
+    print("Received event: " + json.dumps(event, indent=2))
 
-    data = json.loads(event['body'])
-    operation = data['operation']
+    data = event['body']
+    print("Recived body:" + data)
 
-    if 'tableName' in data:
-        dynamo = boto3.resource('dynamodb').Table(data['tableName'])
+    print("Recived operation:" + data['operation'])
+
+    operation = event['operation']
+
+    if 'tableName' in event:
+        dynamo = boto3.resource('dynamodb').Table(event['tableName'])
 
     operations = {
         'create': lambda x: dynamo.put_item(**x),
@@ -31,6 +35,6 @@ def handler(event, context):
     }
 
     if operation in operations:
-        return operations[operation](data.get('payload'))
+        return operations[operation](event.get('payload'))
     else:
         raise ValueError('Unrecognized operation "{}"'.format(operation))
