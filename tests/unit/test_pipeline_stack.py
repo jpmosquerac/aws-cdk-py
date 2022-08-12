@@ -11,4 +11,3 @@ def test_backend_stack():
     template.has_resource('AWS::Lambda::Function')
     template.has_resource('AWS::ApiGateway::RestApi')
     template.has_resource('AWS::DynamoDB::Table')
-    

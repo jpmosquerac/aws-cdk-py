@@ -1,16 +1,17 @@
+from multiprocessing import set_forkserver_preload
 from aws_cdk import (
     App,
+    CfnOutput,
     Stack,
     Stage,
-    StageProps
 )
 
 from aws_cdk.pipelines import (
     ShellStep,
     CodePipeline,
     CodePipelineSource,
-    ManualApprovalStep
 )
+from aws_cdk_py.backend_stack import BackendStack
 
 from aws_cdk_py.backend_stage import BackendStage
 
@@ -31,7 +32,10 @@ class Pipeline(Stack):
                         synth = synth_step)
 
         backendStage = pipeline.add_stage(BackendStage(self, f"{props['namespace']}-BackendStage", props))
-        backendStage.add_post(ShellStep("validate", commands=['python -m pytest']))
+
+        backendStage.add_post(ShellStep("validate",
+                    input=synth_step,
+                    commands=['python ./tests/test_pipeline_stack.py']))
 
         self.output_props = props.copy()
         self.output_props['pipeline'] = pipeline
