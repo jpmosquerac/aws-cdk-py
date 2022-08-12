@@ -33,10 +33,6 @@ class Pipeline(Stack):
 
         backendStage = pipeline.add_stage(BackendStage(self, f"{props['namespace']}-BackendStage", props))
 
-        backendStage.add_post(ShellStep("validate",
-                    input=synth_step,
-                    commands=['python ./tests/test_pipeline_stack.py']))
-
         self.output_props = props.copy()
         self.output_props['pipeline'] = pipeline
 
