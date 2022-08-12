@@ -1,15 +1,18 @@
 from aws_cdk import (
     App,
-    Stack
+    Stack,
+    Stage,
+    StageProps
 )
 
 from aws_cdk.pipelines import (
     ShellStep,
     CodePipeline,
-    CodePipelineSource
+    CodePipelineSource,
+    ManualApprovalStep
 )
 
-from aws_cdk_py.backend_stage import ServerlessBackendStage
+from aws_cdk_py.backend_stage import BackendStage
 
 class Pipeline(Stack):
     def __init__(self, app: App, id: str, props, **kwargs) -> None:
@@ -27,7 +30,8 @@ class Pipeline(Stack):
                         pipeline_name = f"{props['namespace']}-Pipeline",
                         synth = synth_step)
 
-        pipeline.add_stage(ServerlessBackendStage(self, f"{props['namespace']}-BackendStage", props))
+        backendStage = pipeline.add_stage(BackendStage(self, f"{props['namespace']}-BackendStage", props))
+        backendStage.add_post(ShellStep("validate", commands=['python -m pytest']))
 
         self.output_props = props.copy()
         self.output_props['pipeline'] = pipeline

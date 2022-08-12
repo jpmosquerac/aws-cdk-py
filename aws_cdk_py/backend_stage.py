@@ -2,10 +2,10 @@ from aws_cdk import (
     App, Stage
 )
 
-from aws_cdk_py.serverless_backend_stack import ServerlessBackendStack
+from aws_cdk_py.backend_stack import BackendStack
 
-class ServerlessBackendStage(Stage):
+class BackendStage(Stage):
     def __init__(self, app: App, id: str, props, **kwargs) -> None:
         super().__init__(app, id, **kwargs)
 
-        serverlessBackendStack = ServerlessBackendStack(self, f"{props['namespace']}-ServerlessBackendStack", props)
+        backendStack = BackendStack(self, f"{props['namespace']}-BackendStack", props)

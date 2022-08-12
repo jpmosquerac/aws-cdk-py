@@ -26,14 +26,14 @@ env_=Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK
 
 app = App()
 
+# Pipeline stack
+pipeline = Pipeline(app, f"{props['namespace']}-PipelineStack", props, env=env_)
+
 # Set tags to all resources deployed
 for tag_name, tag_value in tags.items():
-    Tags.of(app).add(
+    Tags.of(pipeline).add(
         tag_name,
         tag_value
     )
-
-# Pipeline stack
-pipeline = Pipeline(app, f"{props['namespace']}-PipelineStack", props, env=env_)
 
 app.synth()
