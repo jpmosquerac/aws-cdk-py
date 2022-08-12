@@ -1,4 +1,5 @@
 from __future__ import print_function
+import http
 
 import boto3
 import json
@@ -12,33 +13,33 @@ def handler(event, context):
       - tableName: required for operations that interact with DynamoDB
       - payload: a parameter to pass to the operation being performed
     '''
-    print("Received event: " + json.dumps(event, indent=2))
+    #print("Received event: " + json.dumps(event, indent=2))
 
-    #
-    body = json.loads(event['body'])
-    print("Recived body: %s \nType: %s"%(body, type(body)))
+    httpMethod = event['httpMethod']
 
-    payload = event.get('body')
-    print("Recived payload: %s \nType: %s"%(payload, type(payload)))
+    if httpMethod == 'GET':
+        return 'Hello World'
+    elif httpMethod == 'POST':
+        body = json.loads(event['body'])
 
-    #
-    operation = body['operation']
+        operation = body['operation']
 
+        if 'tableName' in body:
+            dynamo = boto3.resource('dynamodb').Table(body['tableName'])
 
-    if 'tableName' in body:
-        dynamo = boto3.resource('dynamodb').Table(body['tableName'])
+        operations = {
+            'create': lambda x: dynamo.put_item(**x),
+            'read': lambda x: dynamo.get_item(**x),
+            'update': lambda x: dynamo.update_item(**x),
+            'delete': lambda x: dynamo.delete_item(**x),
+            'list': lambda x: dynamo.scan(**x),
+            'echo': lambda x: x,
+            'ping': lambda x: 'pong'
+        }
 
-    operations = {
-        'create': lambda x: dynamo.put_item(**x),
-        'read': lambda x: dynamo.get_item(**x),
-        'update': lambda x: dynamo.update_item(**x),
-        'delete': lambda x: dynamo.delete_item(**x),
-        'list': lambda x: dynamo.scan(**x),
-        'echo': lambda x: x,
-        'ping': lambda x: 'pong'
-    }
-
-    if operation in operations:
-        return operations[operation](json.loads(body['payload']))
+        if operation in operations:
+            return operations[operation](body['payload'])
+        else:
+            raise ValueError('Unrecognized operation "{}"'.format(operation))
     else:
-        raise ValueError('Unrecognized operation "{}"'.format(operation))
+        raise ValueError('Method not allowed "{}"'.format(httpMethod))
