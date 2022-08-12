@@ -16,7 +16,7 @@ class BackendStack(Stack):
         super().__init__(app, id, **kwargs)
 
         bucket =  aws_s3.Bucket(self, id='s3bucket',
-                               bucket_name='ExambpleBucket', removal_policy=RemovalPolicy.DESTROY)
+                               bucket_name='testbucketJP1234', removal_policy=RemovalPolicy.DESTROY)
 
         table = aws_dynamodb.Table(self, id='dynamoTable', table_name='backendtable', 
                                 removal_policy=RemovalPolicy.DESTROY,
