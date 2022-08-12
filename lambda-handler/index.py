@@ -15,31 +15,24 @@ def handler(event, context):
     '''
     #print("Received event: " + json.dumps(event, indent=2))
 
-    httpMethod = event['httpMethod']
+    body = json.loads(event['body'])
 
-    if httpMethod == 'GET':
-        return 'Hello World'
-    elif httpMethod == 'POST':
-        body = json.loads(event['body'])
+    operation = body['operation']
 
-        operation = body['operation']
+    if 'tableName' in body:
+        dynamo = boto3.resource('dynamodb').Table(body['tableName'])
 
-        if 'tableName' in body:
-            dynamo = boto3.resource('dynamodb').Table(body['tableName'])
+    operations = {
+        'create': lambda x: dynamo.put_item(**x),
+        'read': lambda x: dynamo.get_item(**x),
+        'update': lambda x: dynamo.update_item(**x),
+        'delete': lambda x: dynamo.delete_item(**x),
+        'list': lambda x: dynamo.scan(**x),
+        'echo': lambda x: x,
+        'ping': lambda x: 'pong'
+    }
 
-        operations = {
-            'create': lambda x: dynamo.put_item(**x),
-            'read': lambda x: dynamo.get_item(**x),
-            'update': lambda x: dynamo.update_item(**x),
-            'delete': lambda x: dynamo.delete_item(**x),
-            'list': lambda x: dynamo.scan(**x),
-            'echo': lambda x: x,
-            'ping': lambda x: 'pong'
-        }
-
-        if operation in operations:
-            return operations[operation](body['payload'])
-        else:
-            raise ValueError('Unrecognized operation "{}"'.format(operation))
+    if operation in operations:
+        return operations[operation](body['payload'])
     else:
-        raise ValueError('Method not allowed "{}"'.format(httpMethod))
+        raise ValueError('Unrecognized operation "{}"'.format(operation))
