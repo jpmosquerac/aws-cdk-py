@@ -15,7 +15,7 @@ def handler(event, context):
     '''
     #print("Received event: " + json.dumps(event, indent=2))
 
-    body = event['body']
+    body = json.loads(event['body'])
 
     operation = body['operation']
 
@@ -33,6 +33,9 @@ def handler(event, context):
     }
 
     if operation in operations:
-        return operations[operation](body['payload'])
+        try:
+            return operations[operation](json.loads(body['payload']))
+        except Exception:
+            return Exception
     else:
         raise ValueError('Unrecognized operation "{}"'.format(operation))
