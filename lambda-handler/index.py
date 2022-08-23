@@ -32,9 +32,9 @@ def handler(event, context):
     }
 
     if operation in operations:
-        try:
-            return operations[operation](body.get('payload'))
-        except Exception:
-            return Exception.__str__
+        return operations[operation](body.get('payload'))
     else:
         raise ValueError('Unrecognized operation "{}"'.format(operation))
+
+    # Default response
+    raise ValueError('Unexpected unexpected error occurred while procesing your request')
