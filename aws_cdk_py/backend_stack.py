@@ -36,7 +36,6 @@ class BackendStack(Stack):
         postData = api.root.add_resource("api")
         
         postData.add_method("POST")
-        postData.add_method("GET")
 
         self.output_props = props.copy()
         self.output_props['table'] = table
