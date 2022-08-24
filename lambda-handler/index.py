@@ -13,7 +13,7 @@ def handler(event, context):
       - payload: a parameter to pass to the operation being performed
     '''
     try:
-        
+
         print("Received event: " + json.dumps(event, indent=2))
 
         body = json.loads(event['body'])
@@ -42,7 +42,7 @@ def handler(event, context):
                 "body": json.dumps(operations[operation](body.get('payload')))
             }
         else:
-            raise ValueError('Unrecognized operation "{}"'.format(operation))
+            raise ValueError()
 
     except ValueError:
         return {
@@ -50,7 +50,7 @@ def handler(event, context):
                 "headers": {
                     "Content-Type": "application/json"
                 },
-                "body": json.dumps(Exception.__str__)
+                "body": "Unrecognized operation '{}'".format(operation)
         }
 
     except:
