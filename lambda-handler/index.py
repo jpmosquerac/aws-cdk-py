@@ -37,7 +37,7 @@ def handler(event, context):
                 "headers": {
                     "Content-Type": "application/json"
                 },
-                "body": json.dumps(operations[operation](body.get('payload')))
+                "body": json.dumps(operations[operation](body.get('payload')), default=str)
             }
         else:
             raise ValueError()
