@@ -12,30 +12,49 @@ def handler(event, context):
       - tableName: required for operations that interact with DynamoDB
       - payload: a parameter to pass to the operation being performed
     '''
-    print("Received event: " + json.dumps(event, indent=2))
+    try:
+        print("Received event: " + json.dumps(event, indent=2))
 
-    body = json.loads(event['body'])
-    print("body: %s"%body)
+        body = json.loads(event['body'])
 
-    operation = body['operation']
+        operation = body['operation']
 
-    if 'tableName' in body:
-        dynamo = boto3.resource('dynamodb').Table(body['tableName'])
+        if 'tableName' in body:
+            dynamo = boto3.resource('dynamodb').Table(body['tableName'])
 
-    operations = {
-        'create': lambda x: dynamo.put_item(**x),
-        'read': lambda x: dynamo.get_item(**x),
-        'update': lambda x: dynamo.update_item(**x),
-        'delete': lambda x: dynamo.delete_item(**x),
-        'list': lambda x: dynamo.scan(**x),
-        'echo': lambda x: x,
-        'ping': lambda x: 'pong'
-    }
+        operations = {
+            'create': lambda x: dynamo.put_item(**x),
+            'read': lambda x: dynamo.get_item(**x),
+            'update': lambda x: dynamo.update_item(**x),
+            'delete': lambda x: dynamo.delete_item(**x),
+            'list': lambda x: dynamo.scan(**x),
+            'echo': lambda x: x,
+            'ping': lambda x: 'pong'
+        }
 
-    if operation in operations:
-        return operations[operation](body.get('payload'))
-    else:
-        raise ValueError('Unrecognized operation "{}"'.format(operation))
-
-    # Default response
-    raise ValueError('Unexpected unexpected error occurred while procesing your request')
+        try:
+            if operation in operations:
+                return {
+                    "statusCode": 200,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": json.dumps(operations[operation](body.get('payload')))
+                }
+            raise ValueError('Unrecognized operation "{}"'.format(operation))
+        except Exception:
+            return {
+                    "statusCode": 400,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": json.dumps(Exception.__str__)
+            }
+    except Exception:
+        return {
+            "statusCode": 500,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": "Unexpected unexpected error occurred while procesing your request"
+        }
