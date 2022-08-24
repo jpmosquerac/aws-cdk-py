@@ -13,6 +13,7 @@ def handler(event, context):
       - payload: a parameter to pass to the operation being performed
     '''
     try:
+        
         print("Received event: " + json.dumps(event, indent=2))
 
         body = json.loads(event['body'])
@@ -32,25 +33,27 @@ def handler(event, context):
             'ping': lambda x: 'pong'
         }
 
-        try:
-            if operation in operations:
-                return {
-                    "statusCode": 200,
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "body": json.dumps(operations[operation](body.get('payload')))
-                }
-            raise ValueError('Unrecognized operation "{}"'.format(operation))
-        except Exception:
+        if operation in operations:
             return {
-                    "statusCode": 400,
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "body": json.dumps(Exception.__str__)
+                "statusCode": 200,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": json.dumps(operations[operation](body.get('payload')))
             }
-    except Exception:
+        else:
+            raise ValueError('Unrecognized operation "{}"'.format(operation))
+
+    except ValueError:
+        return {
+                "statusCode": 400,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": json.dumps(Exception.__str__)
+        }
+
+    except:
         return {
             "statusCode": 500,
             "headers": {
