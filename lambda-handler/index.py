@@ -1,4 +1,5 @@
 from __future__ import print_function
+from tkinter import E
 
 import boto3
 import json
@@ -53,7 +54,8 @@ def handler(event, context):
                 "body": "Unrecognized operation '{}'".format(operation)
         }
 
-    except:
+    except Exception as e:
+        print("Exception: '{}'".format(str(e)))
         return {
             "statusCode": 500,
             "headers": {
