@@ -1,6 +1,3 @@
-from __future__ import print_function
-from tkinter import E
-
 import boto3
 import json
 
