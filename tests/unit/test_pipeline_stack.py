@@ -27,3 +27,4 @@ def test_backend_stack():
 
     template = assertions.Template.from_stack(stack)
     template.resource_count_is('AWS::CodePipeline::Pipeline', 1)
+    # "pytest ./tests/unit/test_pipeline_stack.py"
