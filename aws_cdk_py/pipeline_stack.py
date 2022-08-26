@@ -23,11 +23,15 @@ class Pipeline(Stack):
                         input = source,
                         commands = ["npm install -g aws-cdk",
                         "python -m pip install -r requirements.txt",
-                        "cdk synth"])
+                        "cdk synth",
+                        "pytest ./tests/unit/test_pipeline_stack.py"
+                        ]
+                    )
 
         pipeline = CodePipeline(self, f"{props['namespace']}-Pipeline", 
                         pipeline_name = f"{props['namespace']}-Pipeline",
-                        synth = synth_step)
+                        synth = synth_step
+                    )
 
         backendStage = pipeline.add_stage(BackendStage(self, f"{props['namespace']}-BackendStage", props))
 
