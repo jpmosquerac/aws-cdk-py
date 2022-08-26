@@ -31,7 +31,7 @@ class Pipeline(Stack):
 
         backendStage = pipeline.add_stage(BackendStage(self, f"{props['namespace']}-BackendStage", props))
 
-        #frontendStage = pipeline.add_stage(FrontendStage(self, f"{props['namespace']}-FrontendStage", props))
+        frontendStage = pipeline.add_stage(FrontendStage(self, f"{props['namespace']}-FrontendStage", props))
 
         self.output_props = props.copy()
         self.output_props['pipeline'] = pipeline
