@@ -21,7 +21,7 @@ class FrontendStack(Stack):
             aws_iam.PolicyStatement(
                 actions=['s3:GetObject'],
                 resources=[bucket.arn_for_objects('*')],
-                principals=[aws_iam.AccountPrincipal(Aws.ACCOUNT_ID)]
+                principals=['*']
             )
         )
 
