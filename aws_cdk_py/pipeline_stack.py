@@ -1,11 +1,6 @@
-from multiprocessing import set_forkserver_preload
-from unicodedata import name
-from attr import validate
 from aws_cdk import (
     App,
-    CfnOutput,
     Stack,
-    Stage,
 )
 
 from aws_cdk.pipelines import (
@@ -13,9 +8,10 @@ from aws_cdk.pipelines import (
     CodePipeline,
     CodePipelineSource,
 )
-from aws_cdk_py.backend_stack import BackendStack
 
 from aws_cdk_py.backend_stage import BackendStage
+from aws_cdk_py.frontend_stage import FrontendStage
+
 
 class Pipeline(Stack):
     def __init__(self, app: App, id: str, props, **kwargs) -> None:
@@ -34,6 +30,8 @@ class Pipeline(Stack):
                         synth = synth_step)
 
         backendStage = pipeline.add_stage(BackendStage(self, f"{props['namespace']}-BackendStage", props))
+
+        #frontendStage = pipeline.add_stage(FrontendStage(self, f"{props['namespace']}-FrontendStage", props))
 
         self.output_props = props.copy()
         self.output_props['pipeline'] = pipeline

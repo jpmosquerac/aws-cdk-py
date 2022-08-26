@@ -7,7 +7,6 @@ from aws_cdk import (
     aws_lambda,
     aws_dynamodb,
     aws_apigateway,
-    aws_s3
 )
 
 class BackendStack(Stack):
