@@ -15,14 +15,8 @@ class FrontendStack(Stack):
             bucket_name=f"{props['namespace'].lower()}-{Aws.ACCOUNT_ID}",
             versioned=True,
             removal_policy=RemovalPolicy.DESTROY,
-            auto_delete_objects=True
-        )
-        bucket.add_to_resource_policy(
-            aws_iam.PolicyStatement(
-                actions=['s3:GetObject'],
-                resources=[bucket.arn_for_objects('*')],
-                principals=['*']
-            )
+            auto_delete_objects=True,
+            public_read_access=True
         )
 
         aws_s3_deployment.BucketDeployment( self, "DeploymentBucket",
